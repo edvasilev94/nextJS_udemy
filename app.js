@@ -1,23 +1,21 @@
+const path = require('path');
+
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-// app.use((req, res, next) => {
-//     console.log('First middleware');
-//     next();
-// });
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-// app.use ((req, res, next) => {
-//     console.log('Second middleware');
-//     res.send('<h1> Home page <h1>');
-// });
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', (req, res, next) => {
-    res.send('<h1> This is users page<h1>');
-})
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
-app.use('/', (req, res, next) => {
-    res.send('<h1> This is a home page (or any other page at this moment ^.^) <h1>');
-})
+app.use((req, res, next) => {
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+});
 
 app.listen(3000);
