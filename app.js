@@ -1,39 +1,23 @@
-const http = require('http');
+const express = require('express');
 
-const server = http.createServer((req, res) => {
-  const url = req.url;
-  if (url === '/') {
-    res.setHeader('Content-Type', 'text/html');
-    res.write('<html>');
-    res.write('<head><title>Assignment</title></head>');
-    res.write(
-      '<body><form action="/create-user" method="POST"><input type="text" name="username"><button type="submit">Send</button></form></body>'
-    );
-    res.write('</html>');
-    return res.end();
-  }
-  if (url === '/users') {
-    res.setHeader('Content-Type', 'text/html');
-    res.write('<html>');
-    res.write('<head><title>Assignment</title></head>');
-    res.write('<body><ul><li>Name 1</li><li>Name 2</li></ul></body>');
-    res.write('</html>');
-    return res.end();
-  }
+const app = express();
 
-  if (url === '/create-user') {
-    const body = [];
-    req.on('data', chunk => {
-      body.push(chunk);
-    });
-    req.on('end', () => {
-      const parsedBody = Buffer.concat(body).toString();
-      console.log(parsedBody.split('=')[1]);
-    });
-    res.statusCode = 302;
-    res.setHeader('Location', '/');
-    res.end();
-  }
-});
+// app.use((req, res, next) => {
+//     console.log('First middleware');
+//     next();
+// });
 
-server.listen(3000);
+// app.use ((req, res, next) => {
+//     console.log('Second middleware');
+//     res.send('<h1> Home page <h1>');
+// });
+
+app.use('/users', (req, res, next) => {
+    res.send('<h1> This is users page<h1>');
+})
+
+app.use('/', (req, res, next) => {
+    res.send('<h1> This is a home page (or any other page at this moment ^.^) <h1>');
+})
+
+app.listen(3000);
